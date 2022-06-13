@@ -1,0 +1,93 @@
+---
+title: "SPC-example"
+author: "Lisa.Anders"
+date: '2022-06-12'
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(plotly)
+```
+
+## Load data
+
+```{r}
+data_tp <- read.csv("./data/SPC_data - Tire Pressure.csv") %>% # relative path
+  mutate(MeasurementName= "tire_pressure") %>%
+  mutate(MeasurementType= "spec") %>%
+  select(-TireBR_var, -TireBL_var, -TireFR_var, -TireFL_var,
+         -TireBR_BL, -TireBL_BL, -TireFR_BL, -TireFL_BL) %>%
+  pivot_longer(cols = starts_with("Tire"), names_to = "MeasurementSite", values_to = "MeasurementValue") %>%
+  mutate(Date = as.Date(Date))
+
+data = data_tp
+  
+# TODO: 
+# Additional data types
+# Data integrity check (see pointblank package)
+# Handling when there are no limits 
+# Handling for FIO versus Spec
+
+```
+
+
+## Create charts
+
+```{r}
+# https://r-graph-gallery.com/connected_scatterplot_ggplot2.html 
+
+# TODO: 
+# For loop for generating all the plots
+# Cache plots with pins
+# Coloring for SPC limits
+# WECO 
+
+data_tmp <- data %>% 
+  filter(Car == "Honda Fit 2012") %>%
+  filter(MeasurementSite == "TireFL") %>% 
+  filter(MeasurementName == "tire_pressure")%>% 
+  mutate(testLow = ifelse(MeasurementValue < LSL , TRUE, FALSE)) %>%
+  mutate(testHigh = ifelse(MeasurementValue > USL , TRUE, FALSE)) %>%
+    mutate(color_spec = case_when(
+      testLow == TRUE ~ "#ffcccb",
+      testHigh == TRUE ~ "#ffcccb",
+    TRUE ~ "#a9a9a9"
+  ))
+
+g <- ggplot( data = data_tmp) +
+      geom_line(aes(x=Date, y=MeasurementValue)) +
+      geom_point(aes(x=Date, y=MeasurementValue), colour = data_tmp$color_spec) + 
+      # geom_point(aes(x=Date, y=MeasurementValue, colour = color_spec)) + 
+      geom_line(aes(x=Date, y=USL), linetype="dashed", color = "red") +
+      geom_line(aes(x=Date, y=LSL), linetype="dashed", color = "red") +
+      #geom_rug(aes(y=MeasurementValue)) +
+      scale_x_date(date_breaks = "1 day") + 
+      theme(axis.text.x = element_text(angle = 45, hjust = 1),
+            axis.text = element_text(size = 3))
+
+g
+
+gp <- ggplotly(g, dynamicTicks = TRUE) #%>%
+  #rangeslider() %>%
+  #layout(hovermode = "x")
+
+gp
+
+```
+
+
+## Display charts
+
+```{r}
+
+
+
+```
+
+
