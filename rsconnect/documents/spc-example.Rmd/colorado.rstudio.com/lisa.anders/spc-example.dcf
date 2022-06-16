@@ -1,0 +1,13 @@
+name: spc-example
+title: spc-example
+username: lisa.anders
+account: lisa.anders
+server: colorado.rstudio.com
+hostUrl: https://colorado.rstudio.com/rsc/__api__
+appId: 11603
+bundleId: 57654
+url: https://colorado.rstudio.com/rsc/content/b9aaa6e0-6f74-4519-95ca-5f7f904b8962/
+when: 1655390241.73037
+lastSyncTime: 1655390241.73037
+asMultiple: FALSE
+asStatic: FALSE

@@ -14,6 +14,7 @@ library(tidyr)
 library(ggplot2)
 library(plotly)
 library(ggExtra)
+library(renv)
 ```
 
 ## Load data
@@ -48,6 +49,7 @@ data = data_tp
 # Cache plots with pins
 # Coloring for SPC limits
 # WECO 
+# https://cran.r-project.org/web/packages/qicharts/vignettes/controlcharts.html 
 
 data_tmp <- data %>% 
   filter(Car == "Honda Fit 2012") %>%
