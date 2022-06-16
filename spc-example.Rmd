@@ -13,11 +13,12 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(plotly)
+library(ggExtra)
 ```
 
 ## Load data
 
-```{r}
+```{r, echo=FALSE}
 data_tp <- read.csv("./data/SPC_data - Tire Pressure.csv") %>% # relative path
   mutate(MeasurementName= "tire_pressure") %>%
   mutate(MeasurementType= "spec") %>%
@@ -39,7 +40,7 @@ data = data_tp
 
 ## Create charts
 
-```{r}
+```{r, echo=FALSE}
 # https://r-graph-gallery.com/connected_scatterplot_ggplot2.html 
 
 # TODO: 
@@ -69,25 +70,37 @@ g <- ggplot( data = data_tmp) +
       #geom_rug(aes(y=MeasurementValue)) +
       scale_x_date(date_breaks = "1 day") + 
       theme(axis.text.x = element_text(angle = 45, hjust = 1),
-            axis.text = element_text(size = 3))
+            axis.text = element_text(size = 3)) +
+      labs(title = paste0(unique(data_tmp$MeasurementName), " : ", unique(data_tmp$MeasurementSite)), collapse = "")
 
-g
+#g
+
+# #Unfortunately looks like ggmarginal won't transfer over to plotly
+# # g1 <- ggMarginal(g, type="histogram", margins = 'y')
+# # g1 <- ggMarginal(g, type="density", margins = 'y')
+g1 <- ggMarginal(g, type="boxplot", margins = 'y')
+
+# Add marginal distribution: https://r-graph-gallery.com/277-marginal-histogram-for-ggplot2.html 
 
 gp <- ggplotly(g, dynamicTicks = TRUE) #%>%
   #rangeslider() %>%
   #layout(hovermode = "x")
 
+#gp
+
+```
+
+
+## Display charts {.tabset}
+
+### Static
+
+```{r, echo=FALSE}
+g1
+```
+
+### Interactive
+
+```{r, echo=FALSE}
 gp
-
 ```
-
-
-## Display charts
-
-```{r}
-
-
-
-```
-
-
